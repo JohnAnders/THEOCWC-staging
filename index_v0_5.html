@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17130e">
+<title>THEO CWC</title>
+<style>
+:root{--ink:#1e1a15;--paper:#f5f0e5;--card:#fffdf8;--muted:#766e61;--line:#d8cfbf;--accent:#6e1f1b;--gold:#9a7428;--green:#24613d;--amber:#8a6218;--red:#852d28;--black:#17130e}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:20;background:rgba(23,19,14,.98);color:#fff;padding:calc(12px + env(safe-area-inset-top)) 18px 12px;border-bottom:3px solid var(--gold)}
+.brand{font-family:Georgia,serif;font-size:24px;font-weight:800;letter-spacing:.04em}.sub{font-size:12px;color:#d8cfbf;margin-top:2px}.privacy{font-size:10px;color:#c8b98e;margin-top:4px}
+main{max-width:850px;margin:auto;padding:17px 14px calc(95px + env(safe-area-inset-bottom))}
+.view{display:none}.view.active{display:block}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+h1,h2{font-family:Georgia,serif}h1{font-size:30px;margin:5px 0 8px}h2{font-size:24px;margin:5px 0 12px}.meta{color:var(--muted);line-height:1.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin:11px 0;box-shadow:0 4px 14px rgba(38,29,17,.05)}
+.row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.title{font-weight:800;font-size:17px;line-height:1.25}.meta{font-size:13px;margin-top:5px}.small{font-size:12px;color:var(--muted)}
+.badge{display:inline-block;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.05em;white-space:nowrap}
+.BUY{background:#dcecdf;color:var(--green)}.VERIFY{background:#f5e8bd;color:var(--amber)}.WATCH{background:#eee4c7;color:#755516}.PASS{background:#efd9d6;color:var(--red)}.OWNED{background:#e5dfd2;color:#50483d}.PENDING{background:#f5e8bd;color:var(--amber)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.btn,.chip{border:1px solid #b8aa92;background:#fffaf0;color:var(--ink);border-radius:12px;padding:10px 12px;font-weight:800;font-size:13px}
+.chip.active{background:var(--black);color:#fff;border-color:var(--black)}
+.btn.primary{background:var(--black);color:#fff;border-color:var(--black)}.btn.danger{color:var(--red)}.btn:disabled{opacity:.55}
+input[type=search]{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:white;font-size:16px}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.stat{background:#eee6d8;border-radius:13px;padding:11px}.stat b{font-size:20px;display:block}.stat span{font-size:11px;color:var(--muted)}
+.rule{height:1px;background:var(--line);margin:11px 0}.empty{padding:20px;border:1px dashed #b8aa92;border-radius:15px;background:#f8f4eb;color:#5e564b}
+.target{border-left:4px solid var(--gold)}.order{border-left:4px solid var(--green)}.pending-card{border-left:4px solid var(--amber)}
+a.ext{color:var(--accent);font-weight:800}.detail{display:none;margin-top:10px}.card.open .detail{display:block}.card button.toggle{border:0;background:none;padding:0;text-align:left;color:inherit;width:100%}
+nav{position:fixed;z-index:30;left:0;right:0;bottom:0;background:#17130e;border-top:2px solid var(--gold);padding:8px 4px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+nav button{border:0;background:none;color:#e7dfd0;text-align:center;font-size:10px;font-weight:800;padding:5px 2px}nav button b{display:block;font-size:19px;margin-bottom:2px}nav button.active{color:#fff3c9}
+.data-banner{background:#2b2419;color:#f4ead8;border-radius:14px;padding:12px;margin:10px 0;font-size:13px}.data-banner strong{color:#fff}.warn{color:#f0cf72}
+.syncbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 12px}.syncstate{font-size:12px;font-weight:900;letter-spacing:.06em;padding:6px 9px;border-radius:999px}
+.live{background:#dcecdf;color:var(--green)}.cached{background:#eee4c7;color:#755516}.stale{background:#f5e8bd;color:var(--amber)}.error{background:#efd9d6;color:var(--red)}
+</style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<header>
+<div class="brand">THEO CWC</div>
+<div class="sub">Civil War Curator · personal app v0.5</div>
+<div class="privacy">Google master authoritative · private working data stays in this browser</div>
+</header>
+<main>
+<div id="dataBanner" class="data-banner"></div>
+<div class="syncbar">
+  <button id="syncBtn" class="btn primary">Sync Now</button>
+  <span id="syncState" class="syncstate cached">CACHED</span>
+  <span id="syncNote" class="small"></span>
+</div>
+
+<section class="view active" id="todayView">
+<div class="eyebrow">Today</div><h1>Your collection, curated.</h1>
+<div id="todayStats" class="statgrid"></div>
+<div id="todayList"></div>
+</section>
+
+<section class="view" id="collectionView">
+<div class="eyebrow">Collection</div><h2>Authoritative holdings</h2>
+<div class="toolbar">
+  <button class="chip active" data-collection-filter="OWNED">Owned</button>
+  <button class="chip" data-collection-filter="PENDING">Pending acquisitions</button>
+  <button class="chip" data-collection-filter="ALL">All inventory</button>
+</div>
+<input id="collectionSearch" type="search" placeholder="Search collection…">
+<div id="collectionList"></div>
+</section>
+
+<section class="view" id="targetsView">
+<div class="eyebrow">Targets</div><h2>What we are deliberately hunting</h2>
+<div id="targetList"></div>
+</section>
+
+<section class="view" id="alertsView">
+<div class="eyebrow">Alerts</div><h2>Filtered, not flooded</h2>
+<div class="toolbar">
+<button class="chip" data-filter="ALL">All active</button>
+<button class="chip" data-filter="BUY">BUY</button>
+<button class="chip" data-filter="VERIFY">VERIFY</button>
+<button class="chip" data-filter="WATCH">WATCH</button>
+</div>
+<div id="alertList"></div>
+</section>
+
+<section class="view" id="ordersView">
+<div class="eyebrow">Orders</div><h2>Purchase → arrival → inspection</h2>
+<div id="orderList"></div>
+<div class="rule"></div>
+<h2 style="font-size:20px">Private data controls</h2>
+<div class="toolbar">
+<label class="btn">Import backup<input id="fileInput" type="file" accept=".json,application/json" hidden></label>
+<button id="exportBtn" class="btn">Export backup</button>
+<button id="clearBtn" class="btn danger">Clear local data</button>
+</div>
+<div class="small">Normal operation is Google sync. JSON import/export is recovery only. No master-sheet data is uploaded to GitHub by THEO.</div>
+</section>
+</main>
+
+<nav>
+<button class="nav active" data-view="todayView"><b>⌂</b>Today</button>
+<button class="nav" data-view="collectionView"><b>▤</b>Collection</button>
+<button class="nav" data-view="targetsView"><b>◎</b>Targets</button>
+<button class="nav" data-view="alertsView"><b>!</b>Alerts</button>
+<button class="nav" data-view="ordersView"><b>▣</b>Orders</button>
+</nav>
+
+<script>
+const KEY='theoCwcSnapshotV05';
+const TOKEN_KEY='theoCwcGoogleTokenV05';
+const CLIENT_ID='1040497896533-mvhth6glhp7m1g49oe2kb8383m77p7ge.apps.googleusercontent.com';
+const SPREADSHEET_ID='1nwUZ5Gm4Vdf87sgUUDJ7dUcJVnP-T7tBrkI47o5gVLE';
+const SCOPE='https://www.googleapis.com/auth/spreadsheets.readonly';
+const RANGES=[
+  "Inventory!A1:Z1000",
+  "'Outstanding Orders'!A1:Z1000",
+  "'Target Register'!A1:Z1000",
+  "'Alert Register'!A1:Z1000",
+  "'Decision History'!A1:Z1000",
+  "'Historical Memory'!A1:L500",
+  "'Decision Engine'!A1:N200",
+  "'Theo Runtime'!A1:J100"
+];
+
+let data=null, alertFilter='ALL', collectionFilter='OWNED', tokenClient=null, syncing=false;
+
+function esc(v=''){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function badge(x){return `<span class="badge ${esc(x)}">${esc(x)}</span>`}
+function normalize(s){return String(s??'').trim()}
+function rowsToObjects(values=[]){
+  if(!values.length)return [];
+  const headers=values[0].map(normalize);
+  return values.slice(1).filter(r=>r.some(v=>normalize(v)!=='')).map(r=>{
+    const o={}; headers.forEach((h,i)=>{if(h)o[h]=r[i]??''}); return o;
+  });
+}
+function mustHave(rows, fields, label){
+  if(!rows.length) throw new Error(`${label}: no rows returned`);
+  const keys=new Set(Object.keys(rows[0]||{}));
+  const missing=fields.filter(f=>!keys.has(f));
+  if(missing.length) throw new Error(`${label}: missing column(s): ${missing.join(', ')}`);
+}
+function activeOperational(s){
+  const x=normalize(s).toUpperCase();
+  return x.startsWith('OPEN') || x.startsWith('WAITING');
+}
+function acquisitionState(status=''){
+  const s=normalize(status).toUpperCase();
+  if(s.includes('DELIVERED') || s.includes('OWNED')) return 'OWNED';
+  if(s.includes('PURCHASED') || s.includes('ORDERED') || s.includes('AWAITING') || s.includes('SHIPPED') || s.includes('DELIVERY STATUS TO VERIFY')) return 'PENDING';
+  return 'PENDING';
+}
+function ownedInventory(){return (data?.inventory||[]).filter(x=>x.acquisitionState==='OWNED')}
+function pendingInventory(){return (data?.inventory||[]).filter(x=>x.acquisitionState==='PENDING')}
+function load(){try{data=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){data=null} render()}
+function saveGood(d){data=d;localStorage.setItem(KEY,JSON.stringify(d));render()}
+function tokenRecord(){try{return JSON.parse(sessionStorage.getItem(TOKEN_KEY)||'null')}catch(e){return null}}
+function saveToken(access_token, expires_in){
+  sessionStorage.setItem(TOKEN_KEY, JSON.stringify({access_token,expiresAt:Date.now()+(Number(expires_in||3600)*1000)-60000}));
+}
+function validToken(){
+  const t=tokenRecord();
+  return t && t.access_token && Date.now()<t.expiresAt ? t.access_token : null;
+}
+function setSyncState(kind,note=''){
+  const el=document.getElementById('syncState');
+  el.className='syncstate '+kind.toLowerCase();
+  el.textContent=kind;
+  document.getElementById('syncNote').textContent=note;
+}
+function lastSyncText(){
+  if(!data?.meta?.lastSuccessfulSync)return '';
+  const d=new Date(data.meta.lastSuccessfulSync);
+  return isNaN(d)?data.meta.lastSuccessfulSync:d.toLocaleString();
+}
+function updateFreshness(){
+  if(syncing){setSyncState('CACHED','Syncing…');return}
+  if(!data){setSyncState('STALE','No local data');return}
+  const t=Date.parse(data.meta?.lastSuccessfulSync||'');
+  if(!t){setSyncState('CACHED','Last sync unknown');return}
+  const age=Date.now()-t;
+  if(age>24*60*60*1000)setSyncState('STALE',`Last synced ${lastSyncText()}`);
+  else setSyncState(data.meta?.syncSource==='GOOGLE_SHEETS'?'LIVE':'CACHED',`Last synced ${lastSyncText()}`);
+}
+function render(){
+  const b=document.getElementById('dataBanner');
+  if(!data)b.innerHTML='<strong>No local master data.</strong> <span class="warn">Tap Sync Now to connect Google and load THEO.</span>';
+  else b.innerHTML=`<strong>${data.meta?.syncSource==='GOOGLE_SHEETS'?'Google master loaded.':'Cached/backup data loaded.'}</strong> ${esc(lastSyncText())} · ${ownedInventory().length} owned · ${pendingInventory().length} pending · ${data.targets?.length||0} active targets · ${data.alerts?.length||0} active alerts`;
+  updateFreshness(); renderToday(); renderCollection(); renderTargets(); renderAlerts(); renderOrders();
+}
+function renderToday(){
+  const alerts=data?.alerts||[], buys=alerts.filter(a=>a.decision==='BUY'), verifies=alerts.filter(a=>a.decision==='VERIFY'), orders=data?.orders||[];
+  document.getElementById('todayStats').innerHTML=`<div class="stat"><b>${buys.length}</b><span>BUY candidates</span></div><div class="stat"><b>${verifies.length}</b><span>Need verification</span></div><div class="stat"><b>${orders.length}</b><span>Orders pending</span></div>`;
+  const top=[...buys,...verifies,...alerts.filter(a=>a.decision==='WATCH')].slice(0,3), el=document.getElementById('todayList');
+  if(!data){el.innerHTML='<div class="empty">Sync Google to populate Today.</div>';return}
+  if(!top.length){el.innerHTML='<div class="empty"><b>Nothing clears the threshold today.</b><br>No active candidate needs your attention.</div>';return}
+  el.innerHTML=top.map(alertCard).join('');
+}
+function inventoryCard(x){
+  const state=x.acquisitionState||acquisitionState(x.status);
+  const extraClass=state==='PENDING'?' pending-card':'';
+  return `<div class="card${extraClass}"><div class="row"><div><div class="title">${esc(x.item)}</div><div class="meta">${esc(x.category)} · ${esc(x.id)}<br>${esc(x.status)}${x.price?' · '+esc(x.price):''}</div></div>${badge(state)}</div>${x.notes?`<div class="detail" style="display:block"><div class="rule"></div><div class="meta">${esc(x.notes)}</div></div>`:''}</div>`;
+}
+function renderCollection(){
+  const q=(document.getElementById('collectionSearch').value||'').toLowerCase();
+  let list=(data?.inventory||[]);
+  if(collectionFilter!=='ALL') list=list.filter(x=>x.acquisitionState===collectionFilter);
+  list=list.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
+  const emptyText=collectionFilter==='OWNED'?'No matching owned holdings.':collectionFilter==='PENDING'?'No matching pending acquisitions.':'No matching inventory records.';
+  document.getElementById('collectionList').innerHTML=data?(list.map(inventoryCard).join('')||`<div class="empty">${emptyText}</div>`):'<div class="empty">Sync Google to browse the collection.</div>';
+}
+function renderTargets(){
+  const l=data?.targets||[];
+  document.getElementById('targetList').innerHTML=data?l.map(t=>`<div class="card target"><div class="title">${esc(t.target)}</div><div class="meta">${esc(t.category)} · ${esc(t.id)} · ${esc(t.priority)}</div><div class="detail" style="display:block"><div class="rule"></div><div class="meta"><b>Criteria:</b> ${esc(t.criteria)}<br><b>Trigger:</b> ${esc(t.trigger)}</div></div></div>`).join(''):'<div class="empty">Sync Google to load targets.</div>';
+}
+function alertCard(a){
+  return `<div class="card"><button class="toggle" onclick="this.closest('.card').classList.toggle('open')"><div class="row"><div><div class="title">${esc(a.item)}</div><div class="meta">${esc(a.id)} · ${esc(a.operational)}${a.delivered?' · '+esc(a.delivered):''}</div></div>${badge(a.decision)}</div></button><div class="detail"><div class="rule"></div><div class="meta"><b>Source:</b> ${esc(a.source||'')}<br><b>Next:</b> ${esc(a.next||'')}<br><b>Updated:</b> ${esc(a.updated||'')}</div>${a.url?`<div style="margin-top:10px"><a class="ext" href="${esc(a.url)}" target="_blank" rel="noopener">Open listing ↗</a></div>`:''}</div></div>`;
+}
+function renderAlerts(){
+  let l=data?.alerts||[]; if(alertFilter!=='ALL')l=l.filter(a=>a.decision===alertFilter);
+  document.getElementById('alertList').innerHTML=data?(l.map(alertCard).join('')||'<div class="empty">Nothing in this filter.</div>'):'<div class="empty">Sync Google to load alerts.</div>';
+}
+function renderOrders(){
+  const l=data?.orders||[];
+  document.getElementById('orderList').innerHTML=data?l.map(o=>`<div class="card order"><div class="title">${esc(o.item)}</div><div class="meta">${esc(o.id)} · ${esc(o.vendor)}<br><b>${esc(o.status)}</b>${o.notes?'<br>'+esc(o.notes):''}</div></div>`).join(''):'<div class="empty">Sync Google to load the order queue.</div>';
+}
+async function batchGet(token){
+  const p=new URLSearchParams();
+  RANGES.forEach(r=>p.append('ranges',r));
+  p.set('majorDimension','ROWS');
+  p.set('valueRenderOption','FORMATTED_VALUE');
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values:batchGet?${p.toString()}`;
+  const res=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
+  if(res.status===401)throw new Error('Google authorization expired. Tap Sync Now to reconnect.');
+  if(!res.ok){let msg='';try{msg=(await res.json())?.error?.message||''}catch(e){}throw new Error(msg||`Sheets API error ${res.status}`)}
+  return await res.json();
+}
+function buildModel(payload){
+  const sets=payload.valueRanges||[];
+  if(sets.length!==RANGES.length)throw new Error(`Expected ${RANGES.length} master ranges; received ${sets.length}.`);
+  const tabs=sets.map(x=>rowsToObjects(x.values||[]));
+  const [inv,ord,tgt,alt,dec,mem,eng,run]=tabs;
+  mustHave(inv,['Category','Item','Status','Price Paid','Notes','Item ID'],'Inventory');
+  mustHave(ord,['Item','Vendor','Status','Notes','Item / Order ID'],'Outstanding Orders');
+  mustHave(tgt,['Target ID','Active?','Category','Target','Priority','Desired Attributes','Budget / Trigger'],'Target Register');
+  mustHave(alt,['Alert ID','Item','Source','Est. Delivered','Next Action','Listing URL','Last Updated','Operational Status','Curatorial Decision'],'Alert Register');
+
+  const inventory=inv.map(r=>{
+    const status=normalize(r['Status']);
+    return {id:normalize(r['Item ID']),category:normalize(r['Category']),item:normalize(r['Item']),status,acquisitionState:acquisitionState(status),price:normalize(r['Price Paid']),notes:normalize(r['Notes'])};
+  }).filter(x=>x.id&&x.item);
+  const orders=ord.map(r=>({id:normalize(r['Item / Order ID']),item:normalize(r['Item']),vendor:normalize(r['Vendor']),status:normalize(r['Status']),notes:[normalize(r['Tracking'])?`Tracking: ${normalize(r['Tracking'])}`:'',normalize(r['Notes'])].filter(Boolean).join(' · ')})).filter(x=>x.id&&x.item);
+  const targets=tgt.filter(r=>normalize(r['Active?']).toUpperCase()==='YES').map(r=>({id:normalize(r['Target ID']),category:normalize(r['Category']),target:normalize(r['Target']),priority:normalize(r['Priority']),criteria:normalize(r['Desired Attributes']),trigger:normalize(r['Budget / Trigger'])})).filter(x=>x.id&&x.target);
+  const alerts=alt.filter(r=>activeOperational(r['Operational Status'])).map(r=>({id:normalize(r['Alert ID']),decision:normalize(r['Curatorial Decision']).toUpperCase(),operational:normalize(r['Operational Status']),item:normalize(r['Item']),delivered:normalize(r['Est. Delivered']),source:normalize(r['Source']),next:normalize(r['Next Action']),url:normalize(r['Listing URL']),updated:normalize(r['Last Updated'])})).filter(x=>x.id&&x.item&&['BUY','VERIFY','WATCH'].includes(x.decision));
+
+  if(!inventory.length)throw new Error('Validation failed: Inventory is empty.');
+  if(!targets.length)throw new Error('Validation failed: Target Register has no active targets.');
+
+  return {meta:{app:'THEO CWC',version:'0.5',source:'Civil_War_Collection_Master_LIVE',sourceSpreadsheetId:SPREADSHEET_ID,syncSource:'GOOGLE_SHEETS',lastSuccessfulSync:new Date().toISOString()},inventory,orders,targets,alerts,decisions:dec,historicalMemory:mem,decisionEngine:eng,theoRuntime:run};
+}
+async function syncWithToken(token){
+  if(syncing)return;
+  syncing=true;document.getElementById('syncBtn').disabled=true;updateFreshness();
+  try{
+    const payload=await batchGet(token);
+    const candidate=buildModel(payload);
+    saveGood(candidate);
+    setSyncState('LIVE',`Last synced ${lastSyncText()}`);
+  }catch(err){
+    setSyncState('ERROR',err.message);
+    alert(`THEO sync failed. Your last known-good data was kept.\n\n${err.message}`);
+  }finally{
+    syncing=false;document.getElementById('syncBtn').disabled=false;updateFreshness();
+  }
+}
+function initGoogle(){
+  if(!window.google?.accounts?.oauth2){setTimeout(initGoogle,250);return}
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:CLIENT_ID,scope:SCOPE,
+    callback:(resp)=>{if(resp.error){setSyncState('ERROR',resp.error);return}saveToken(resp.access_token,resp.expires_in);syncWithToken(resp.access_token);}
+  });
+  const t=validToken();
+  if(t)syncWithToken(t);
+  else updateFreshness();
+}
+function requestSync(){
+  const t=validToken();
+  if(t){syncWithToken(t);return}
+  if(!tokenClient){alert('Google authorization is still loading. Try again in a moment.');return}
+  tokenClient.requestAccessToken({prompt:''});
+}
+
+document.querySelectorAll('.nav').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.nav').forEach(v=>v.classList.remove('active'));document.getElementById(btn.dataset.view).classList.add('active');btn.classList.add('active');window.scrollTo(0,0);}));
+document.getElementById('collectionSearch').addEventListener('input',renderCollection);
+document.querySelectorAll('[data-collection-filter]').forEach(b=>b.addEventListener('click',()=>{
+  collectionFilter=b.dataset.collectionFilter;
+  document.querySelectorAll('[data-collection-filter]').forEach(x=>x.classList.toggle('active',x===b));
+  renderCollection();
+}));
+document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{alertFilter=b.dataset.filter;renderAlerts()}));
+document.getElementById('syncBtn').addEventListener('click',requestSync);
+document.getElementById('fileInput').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!d.inventory||!d.targets||!d.alerts)throw new Error('Invalid Theo backup');d.meta=d.meta||{};d.meta.syncSource='BACKUP';d.inventory=(d.inventory||[]).map(x=>({...x,acquisitionState:x.acquisitionState||acquisitionState(x.status)}));saveGood(d);alert('THEO backup imported into this browser.');}catch(err){alert('Could not import backup: '+err.message)}e.target.value='';});
+document.getElementById('exportBtn').addEventListener('click',()=>{if(!data){alert('No private data loaded.');return}const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='THEO_CWC_v0_5_backup.json';a.click();URL.revokeObjectURL(a.href);});
+document.getElementById('clearBtn').addEventListener('click',()=>{if(confirm('Clear THEO CWC private cached data from this browser?')){localStorage.removeItem(KEY);sessionStorage.removeItem(TOKEN_KEY);data=null;render()}});
+load();
+window.addEventListener('load',initGoogle);
+</script>
+</body>
+</html>

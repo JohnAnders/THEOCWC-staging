@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17130e">
+<title>THEO CWC</title>
+<style>
+:root{--ink:#1e1a15;--paper:#f5f0e5;--card:#fffdf8;--muted:#766e61;--line:#d8cfbf;--accent:#6e1f1b;--gold:#9a7428;--green:#24613d;--amber:#8a6218;--red:#852d28;--black:#17130e}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:20;background:rgba(23,19,14,.98);color:#fff;padding:calc(12px + env(safe-area-inset-top)) 18px 12px;border-bottom:3px solid var(--gold)}
+.brand{font-family:Georgia,serif;font-size:24px;font-weight:800;letter-spacing:.04em}.sub{font-size:12px;color:#d8cfbf;margin-top:2px}.privacy{font-size:10px;color:#c8b98e;margin-top:4px}
+main{max-width:850px;margin:auto;padding:17px 14px calc(95px + env(safe-area-inset-bottom))}
+.view{display:none}.view.active{display:block}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}h1,h2{font-family:Georgia,serif}h1{font-size:30px;margin:5px 0 8px}h2{font-size:24px;margin:5px 0 12px}.lede,.meta{color:var(--muted);line-height:1.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;margin:11px 0;box-shadow:0 4px 14px rgba(38,29,17,.05)}.row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.title{font-weight:800;font-size:17px;line-height:1.25}.meta{font-size:13px;margin-top:5px}.small{font-size:12px;color:var(--muted)}
+.badge{display:inline-block;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.05em;white-space:nowrap}.BUY{background:#dcecdf;color:var(--green)}.VERIFY{background:#f5e8bd;color:var(--amber)}.WATCH{background:#eee4c7;color:#755516}.PASS{background:#efd9d6;color:var(--red)}.OWNED{background:#e5dfd2;color:#50483d}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.btn,.chip{border:1px solid #b8aa92;background:#fffaf0;color:var(--ink);border-radius:12px;padding:10px 12px;font-weight:800;font-size:13px}.btn.primary{background:var(--black);color:#fff;border-color:var(--black)}.btn.danger{color:var(--red)}input[type=search]{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:white;font-size:16px}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.stat{background:#eee6d8;border-radius:13px;padding:11px}.stat b{font-size:20px;display:block}.stat span{font-size:11px;color:var(--muted)}
+.rule{height:1px;background:var(--line);margin:11px 0}.empty{padding:20px;border:1px dashed #b8aa92;border-radius:15px;background:#f8f4eb;color:#5e564b}.target{border-left:4px solid var(--gold)}.order{border-left:4px solid var(--green)}
+a.ext{color:var(--accent);font-weight:800}.detail{display:none;margin-top:10px}.card.open .detail{display:block}.card button.toggle{border:0;background:none;padding:0;text-align:left;color:inherit;width:100%}
+nav{position:fixed;z-index:30;left:0;right:0;bottom:0;background:#17130e;border-top:2px solid var(--gold);padding:8px 4px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+nav button{border:0;background:none;color:#e7dfd0;text-align:center;font-size:10px;font-weight:800;padding:5px 2px}nav button b{display:block;font-size:19px;margin-bottom:2px}nav button.active{color:#fff3c9}
+.data-banner{background:#2b2419;color:#f4ead8;border-radius:14px;padding:12px;margin:10px 0;font-size:13px}.data-banner strong{color:#fff}.warn{color:#f0cf72}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">THEO CWC</div>
+<div class="sub">Civil War Curator · personal app v0.3</div>
+<div class="privacy">Public shell · private data stays in this browser</div>
+</header>
+<main>
+<div id="dataBanner" class="data-banner"></div>
+
+<section class="view active" id="todayView">
+<div class="eyebrow">Today</div><h1>Your collection, curated.</h1>
+<div id="todayStats" class="statgrid"></div>
+<div id="todayList"></div>
+</section>
+
+<section class="view" id="collectionView">
+<div class="eyebrow">Collection</div><h2>Authoritative holdings snapshot</h2>
+<input id="collectionSearch" type="search" placeholder="Search collection…">
+<div id="collectionList"></div>
+</section>
+
+<section class="view" id="targetsView">
+<div class="eyebrow">Targets</div><h2>What we are deliberately hunting</h2>
+<div id="targetList"></div>
+</section>
+
+<section class="view" id="alertsView">
+<div class="eyebrow">Alerts</div><h2>Filtered, not flooded</h2>
+<div class="toolbar">
+<button class="chip" data-filter="ALL">All active</button>
+<button class="chip" data-filter="BUY">BUY</button>
+<button class="chip" data-filter="VERIFY">VERIFY</button>
+<button class="chip" data-filter="WATCH">WATCH</button>
+</div>
+<div id="alertList"></div>
+</section>
+
+<section class="view" id="ordersView">
+<div class="eyebrow">Orders</div><h2>Purchase → arrival → inspection</h2>
+<div id="orderList"></div>
+<div class="rule"></div>
+<h2 style="font-size:20px">Private data controls</h2>
+<div class="toolbar">
+<label class="btn primary">Import Theo Snapshot<input id="fileInput" type="file" accept=".json,application/json" hidden></label>
+<button id="exportBtn" class="btn">Export backup</button>
+<button id="clearBtn" class="btn danger">Clear local data</button>
+</div>
+<div class="small">Your imported snapshot is stored in this browser's local storage. It is not uploaded to the public GitHub repository by this app.</div>
+</section>
+</main>
+
+<nav>
+<button class="nav active" data-view="todayView"><b>⌂</b>Today</button>
+<button class="nav" data-view="collectionView"><b>▤</b>Collection</button>
+<button class="nav" data-view="targetsView"><b>◎</b>Targets</button>
+<button class="nav" data-view="alertsView"><b>!</b>Alerts</button>
+<button class="nav" data-view="ordersView"><b>▣</b>Orders</button>
+</nav>
+
+<script>
+const KEY='theoCwcSnapshotV03';
+let data=null, alertFilter='ALL';
+
+function esc(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function load(){try{data=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){data=null} render()}
+function save(d){data=d;localStorage.setItem(KEY,JSON.stringify(d));render()}
+function badge(x){return `<span class="badge ${esc(x)}">${esc(x)}</span>`}
+
+function render(){
+ const b=document.getElementById('dataBanner');
+ if(!data){b.innerHTML='<strong>No private snapshot loaded.</strong> <span class="warn">Go to Orders → Import Theo Snapshot.</span>'; }
+ else {b.innerHTML=`<strong>Private snapshot loaded.</strong> ${esc(data.meta?.generated||'')} · ${data.inventory?.length||0} holdings · ${data.alerts?.length||0} active alerts in snapshot`; }
+ renderToday(); renderCollection(); renderTargets(); renderAlerts(); renderOrders();
+}
+function renderToday(){
+ const alerts=(data?.alerts||[]);
+ const buys=alerts.filter(a=>a.decision==='BUY');
+ const verifies=alerts.filter(a=>a.decision==='VERIFY');
+ const orders=data?.orders||[];
+ document.getElementById('todayStats').innerHTML=
+ `<div class="stat"><b>${buys.length}</b><span>BUY candidates</span></div><div class="stat"><b>${verifies.length}</b><span>Need verification</span></div><div class="stat"><b>${orders.length}</b><span>Orders pending</span></div>`;
+ const top=[...buys,...verifies,...alerts.filter(a=>a.decision==='WATCH')].slice(0,3);
+ const el=document.getElementById('todayList');
+ if(!data){el.innerHTML='<div class="empty">Import your private Theo snapshot to populate Today.</div>';return}
+ if(!top.length){el.innerHTML='<div class="empty"><b>Nothing clears the threshold today.</b><br>No active candidate needs your attention.</div>';return}
+ el.innerHTML=top.map(a=>alertCard(a)).join('');
+}
+function inventoryCard(x){
+ return `<div class="card"><div class="row"><div><div class="title">${esc(x.item)}</div><div class="meta">${esc(x.category)} · ${esc(x.id)}<br>${esc(x.status)}${x.price?' · '+esc(x.price):''}</div></div>${badge('OWNED')}</div>${x.notes?`<div class="detail"><div class="rule"></div><div class="meta">${esc(x.notes)}</div></div>`:''}</div>`;
+}
+function renderCollection(){
+ const q=(document.getElementById('collectionSearch').value||'').toLowerCase();
+ const list=(data?.inventory||[]).filter(x=>JSON.stringify(x).toLowerCase().includes(q));
+ document.getElementById('collectionList').innerHTML=data ? (list.map(inventoryCard).join('')||'<div class="empty">No matching holdings.</div>') : '<div class="empty">Import your snapshot to browse the collection.</div>';
+}
+function renderTargets(){
+ const l=data?.targets||[];
+ document.getElementById('targetList').innerHTML=data ? l.map(t=>`<div class="card target"><div class="row"><div><div class="title">${esc(t.target)}</div><div class="meta">${esc(t.category)} · ${esc(t.id)} · ${esc(t.priority)}</div></div></div><div class="detail" style="display:block"><div class="rule"></div><div class="meta"><b>Criteria:</b> ${esc(t.criteria)}<br><b>Trigger:</b> ${esc(t.trigger)}</div></div></div>`).join('') : '<div class="empty">Import your snapshot to load targets.</div>';
+}
+function alertCard(a){
+ return `<div class="card"><button class="toggle" onclick="this.closest('.card').classList.toggle('open')"><div class="row"><div><div class="title">${esc(a.item)}</div><div class="meta">${esc(a.id)} · ${esc(a.operational)}${a.delivered?' · '+esc(a.delivered):''}</div></div>${badge(a.decision)}</div></button><div class="detail"><div class="rule"></div><div class="meta"><b>Source:</b> ${esc(a.source||'')}<br><b>Next:</b> ${esc(a.next||'')}<br><b>Updated:</b> ${esc(a.updated||'')}</div>${a.url?`<div style="margin-top:10px"><a class="ext" href="${esc(a.url)}" target="_blank" rel="noopener">Open listing ↗</a></div>`:''}</div></div>`;
+}
+function renderAlerts(){
+ let l=data?.alerts||[]; if(alertFilter!=='ALL') l=l.filter(a=>a.decision===alertFilter);
+ document.getElementById('alertList').innerHTML=data ? (l.map(alertCard).join('')||'<div class="empty">Nothing in this filter.</div>') : '<div class="empty">Import your snapshot to load alerts.</div>';
+}
+function renderOrders(){
+ const l=data?.orders||[];
+ document.getElementById('orderList').innerHTML=data ? l.map(o=>`<div class="card order"><div class="title">${esc(o.item)}</div><div class="meta">${esc(o.id)} · ${esc(o.vendor)}<br><b>${esc(o.status)}</b>${o.notes?'<br>'+esc(o.notes):''}</div></div>`).join('') : '<div class="empty">Import your snapshot to load the inspection/order queue.</div>';
+}
+
+document.querySelectorAll('.nav').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+ document.querySelectorAll('.nav').forEach(v=>v.classList.remove('active'));
+ document.getElementById(btn.dataset.view).classList.add('active'); btn.classList.add('active'); window.scrollTo(0,0);
+}));
+document.getElementById('collectionSearch').addEventListener('input',renderCollection);
+document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{alertFilter=b.dataset.filter;renderAlerts()}));
+document.getElementById('fileInput').addEventListener('change',async e=>{
+ const f=e.target.files[0]; if(!f)return;
+ try{const d=JSON.parse(await f.text()); if(!d.inventory||!d.targets||!d.alerts) throw new Error('Invalid Theo snapshot'); save(d); alert('Theo snapshot imported into this browser.');}
+ catch(err){alert('Could not import snapshot: '+err.message)}
+ e.target.value='';
+});
+document.getElementById('exportBtn').addEventListener('click',()=>{
+ if(!data){alert('No private data loaded.');return}
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a');
+ a.href=URL.createObjectURL(blob); a.download='THEO_CWC_backup.json'; a.click(); URL.revokeObjectURL(a.href);
+});
+document.getElementById('clearBtn').addEventListener('click',()=>{
+ if(confirm('Clear THEO CWC private data from this browser?')){localStorage.removeItem(KEY);data=null;render()}
+});
+load();
+</script>
+</body></html>

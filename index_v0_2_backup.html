@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17130e">
+<title>THEO CWC</title>
+<style>
+:root{--ink:#1e1a15;--paper:#f5f0e5;--card:#fffdf8;--muted:#766e61;--line:#d8cfbf;--accent:#6e1f1b;--gold:#9a7428;--green:#24613d;--amber:#8a6218;--red:#852d28}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:5;background:rgba(23,19,14,.97);color:white;padding:calc(12px + env(safe-area-inset-top)) 18px 14px;border-bottom:3px solid var(--gold)}
+.brand{font-family:Georgia,serif;font-size:24px;font-weight:800;letter-spacing:.04em}.sub{font-size:12px;color:#d8cfbf;margin-top:2px}
+main{max-width:780px;margin:auto;padding:18px 16px calc(92px + env(safe-area-inset-bottom))}
+section{scroll-margin-top:90px;margin-bottom:26px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+h1,h2,h3{font-family:Georgia,serif}h1{font-size:31px;margin:5px 0 7px}h2{font-size:24px;margin:4px 0 12px}.lede{color:var(--muted);line-height:1.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 4px 14px rgba(38,29,17,.05)}
+.row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.title{font-weight:800;font-size:17px;line-height:1.25}.meta{color:var(--muted);font-size:13px;margin-top:5px;line-height:1.4}
+.badge{display:inline-block;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.05em;white-space:nowrap}
+.buy{background:#dcecdf;color:var(--green)}.verify{background:#f5e8bd;color:var(--amber)}.pass{background:#efd9d6;color:var(--red)}.owned{background:#e5dfd2;color:#50483d}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0}.stat{background:#eee6d8;border-radius:13px;padding:12px}.stat b{font-size:21px;display:block}.stat span{font-size:11px;color:var(--muted)}
+.rule{height:1px;background:var(--line);margin:12px 0}.next{font-weight:800;margin-top:10px}.quiet{padding:15px;border:1px dashed #b8aa92;border-radius:14px;color:#5e564b;background:#f8f4eb}
+nav{position:fixed;z-index:10;left:0;right:0;bottom:0;background:#17130e;border-top:2px solid var(--gold);padding:8px 7px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+nav a{color:#e7dfd0;text-decoration:none;text-align:center;font-size:10px;font-weight:700;padding:5px 2px}nav b{display:block;font-size:19px;margin-bottom:2px}
+.small{font-size:12px;color:var(--muted)}.target{border-left:4px solid var(--gold)}.order{border-left:4px solid var(--green)}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
+</style>
+</head>
+<body>
+<header><div class="brand">THEO CWC</div><div class="sub">Civil War Curator · visual prototype v0.2</div></header>
+<main>
+<section id="today">
+<div class="eyebrow">Today</div><h1>Your collection, curated.</h1>
+<p class="lede">The interface is intentionally selective. Theo should show what deserves attention—not manufacture reasons to buy.</p>
+<div class="statgrid"><div class="stat"><b>1</b><span>Priority action</span></div><div class="stat"><b>2</b><span>Verify / watch</span></div><div class="stat"><b>0</b><span>Forced buys</span></div></div>
+<div class="card"><div class="row"><div><div class="title">Official Records — Atlanta Campaign, Vol. XXXVIII Pt. III</div><div class="meta">Known candidate · strong target fit · no catalog overlap noted in prototype data</div></div><span class="badge buy">BUY</span></div><div class="rule"></div><div class="next">Next: confirm current listing state and delivered price before acting.</div></div>
+<div class="card"><div class="row"><div><div class="title">Bruce Catton — collectible trilogy completion</div><div class="meta">Mr. Lincoln’s Army / Glory Road · only signed, true first/early with jacket, or premium complementary edition</div></div><span class="badge verify">WATCH</span></div></div>
+<div class="quiet"><b>No-buy state is a feature.</b><br>If nothing clears the stricter gem threshold, Theo should simply tell you to buy nothing.</div>
+</section>
+
+<section id="collection">
+<div class="eyebrow">Collection</div><h2>Authoritative holdings</h2>
+<div class="card"><div class="row"><div><div class="title">The Coming Fury — Bruce Catton</div><div class="meta">Signed Franklin Library copy · reference-quality Catton holding</div></div><span class="badge owned">OWNED</span></div></div>
+<div class="card"><div class="row"><div><div class="title">A Stillness at Appomattox — Bruce Catton</div><div class="meta">Signed Franklin Library copy · suppress ordinary duplicates</div></div><span class="badge owned">OWNED</span></div></div>
+<div class="card"><div class="title">Collection principle</div><div class="meta">This screen will eventually read from the private master catalog. The public prototype contains no credentials and is not the authoritative database.</div></div>
+</section>
+
+<section id="targets">
+<div class="eyebrow">Targets</div><h2>What we are deliberately hunting</h2>
+<div class="card target"><div class="title">Shelby Foote — genuinely signed / inscribed</div><div class="meta">Very high priority · sleeper/generalist listings preferred · authenticity and condition gates apply.</div></div>
+<div class="card target"><div class="title">Official Records — priority volumes</div><div class="meta">Grant, Sherman, Lincoln, Lee; Chattanooga/Chickamauga and Atlanta operations. Exact Series/Volume/Part required.</div></div>
+<div class="card target"><div class="title">Major-event original newspapers / Harper’s Weekly</div><div class="meta">Target historically significant dates/content—not random period originals.</div></div>
+<div class="card target"><div class="title">Catton trilogy completion</div><div class="meta">Mr. Lincoln’s Army and Glory Road only when the copy earns its place.</div></div>
+</section>
+
+<section id="alerts">
+<div class="eyebrow">Alerts</div><h2>Filtered, not flooded</h2>
+<div class="card"><div class="row"><div><div class="title">VERIFY</div><div class="meta">Candidates missing material evidence—signature, edition, completeness, condition, provenance or seller answers.</div></div><span class="badge verify">VERIFY</span></div></div>
+<div class="card"><div class="row"><div><div class="title">PASS suppression</div><div class="meta">Duplicates, compromised condition, weak historical significance, poor value and stale/closed listings stay out of the default view.</div></div><span class="badge pass">PASS</span></div></div>
+<div class="quiet">Prototype rule: serious candidates should eventually persist to Theo’s private records rather than live only in chat.</div>
+</section>
+
+<section id="orders">
+<div class="eyebrow">Orders</div><h2>Purchase → arrival → inspection</h2>
+<div class="card order"><div class="title">Inspection queue</div><div class="meta">A purchase is not treated as fully complete until the received copy is checked against the listing, known defects, completeness and packaging expectations.</div><div class="rule"></div><div class="next">Future controls: Received · Inspect · Accept · Return / Investigate</div></div>
+<div class="card"><div class="title">Private-data boundary</div><div class="meta">Actual order details, seller conversations and purchase history remain outside this public GitHub prototype.</div></div>
+</section>
+<footer>THEO CWC · Option 2A · $0 static prototype</footer>
+</main>
+<nav>
+<a href="#today"><b>⌂</b>Today</a>
+<a href="#collection"><b>▤</b>Collection</a>
+<a href="#targets"><b>◎</b>Targets</a>
+<a href="#alerts"><b>!</b>Alerts</a>
+<a href="#orders"><b>▣</b>Orders</a>
+</nav>
+</body>
+</html>
