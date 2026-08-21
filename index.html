@@ -49,10 +49,9 @@ button,input{font:inherit}button{color:inherit}.shell{max-width:920px;margin:aut
 </div>
 
 <div class="askdock">
-  <button id="photoBtn" aria-label="Photo">＋</button>
+  <button id="photoBtn" aria-label="Assess a photo">＋</button>
   <input id="askInput" autocomplete="off" placeholder="Ask Theo">
   <button id="sendBtn" aria-label="Send">↑</button>
-  <input id="photoInput" class="hidden" type="file" accept="image/*" capture="environment">
 </div>
 
 <script>
@@ -114,7 +113,7 @@ $('#syncPill').onclick=requestSync;
 $('#askInput').onfocus=()=>{if(currentView!=='askView'){if(!currentContext)currentContext={type:'general',label:'',trail:[{id:'homeView',label:'Home'}]};show('askView',currentContext);renderAsk()}};
 function askTheo(extra=''){const text=norm($('#askInput').value);if(!text&&!extra)return;const ctx=contextPayload();const context=ctx?`Active THEO context: ${JSON.stringify(ctx)}. `:'';const prompt=`You are THEO, my Civil War collecting curator. Use the active context without asking me to restate it. ${context}${extra}${text}`;window.open(`https://chatgpt.com/?q=${encodeURIComponent(prompt)}`,'_blank');$('#askInput').value=''}
 $('#sendBtn').onclick=()=>askTheo();$('#askInput').onkeydown=e=>{if(e.key==='Enter')askTheo()};
-$('#photoBtn').onclick=()=>$('#photoInput').click();$('#photoInput').onchange=e=>{const f=e.target.files?.[0];if(!f)return;currentContext=currentContext||{type:'general',label:'',trail:[{id:'homeView',label:'Home'}]};show('askView',currentContext);$('#askInput').value='Assess this Civil War collecting sighting.';alert('Photo selected. Use the ChatGPT attachment control after THEO opens; browsers cannot transfer the image file into ChatGPT automatically.');};
+$('#photoBtn').onclick=()=>askTheo('I will attach or take a photo in ChatGPT next. Assess that Civil War collecting sighting from the photo alone, using the active THEO context.');
 load();window.addEventListener('load',initGoogle);renderCrumbs();
 </script>
 </body>
